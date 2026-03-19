@@ -11,7 +11,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #ffffff;
+            background-color: #ffffff; /* Matches your cover's white background */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -30,23 +30,23 @@
             display: none;
             width: 100%;
             height: 100vh;
-        }
-
-        .slide.active {
-            display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        img {
-            max-width: 95vw;
-            max-height: 90vh;
-            display: block;
-            object-fit: contain;
-            user-select: none;
-            -webkit-user-drag: none;
+        .slide.active {
+            display: flex;
         }
 
+        img {
+            max-width: 100vw; /* Allows the image to breathe */
+            max-height: 100vh;
+            display: block;
+            object-fit: contain; /* CRITICAL: Prevents stretching/distortion */
+            user-select: none;
+        }
+
+        /* Navigation Arrows */
         .nav-btn {
             position: absolute;
             top: 50%;
@@ -54,24 +54,24 @@
             background: none;
             border: none;
             color: #000000;
-            font-size: 4rem;
-            padding: 40px;
+            font-size: 3.5rem;
+            padding: 30px;
             cursor: pointer;
-            z-index: 10;
-            opacity: 0.1;
-            transition: opacity 0.3s ease;
+            z-index: 100;
+            opacity: 0.1; /* Very faint so it doesn't distract from your work */
+            transition: opacity 0.3s ease, transform 0.2s;
         }
 
         .nav-btn:hover {
             opacity: 0.8;
+            transform: translateY(-50%) scale(1.1);
         }
 
         .prev { left: 2%; }
         .next { right: 2%; }
 
         @media (max-width: 768px) {
-            .nav-btn { font-size: 2.5rem; padding: 15px; opacity: 0.3; }
-            img { max-width: 100vw; }
+            .nav-btn { font-size: 2rem; padding: 15px; opacity: 0.3; }
         }
     </style>
 </head>
@@ -79,152 +79,32 @@
 
     <div class="slider-container">
         <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-
-        <div class="slide active">
-            <img src="Junde Xu's design portfolio 1.jpeg">
-        </div>
-
-        <div class="slide">
-            <img src="Junde Xu's design portfolio 2.jpeg">
-        </div>
-
-        <div class="slide">
-            <img src="Junde Xu's design portfolio 3.jpeg">
-        </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Junde Xu | Design Portfolio</title>
-    <style>
-        :root {
-            --bg-color: #ffffff;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.6s ease-in-out;
-            font-family: sans-serif;
-        }
-
-        .slider-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slide {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slide.active {
-            display: flex;
-        }
-
-        img {
-            max-width: 95vw;
-            max-height: 92vh;
-            display: block;
-            object-fit: contain;
-            user-select: none;
-            -webkit-user-drag: none;
-            /* Optional: subtle shadow to define the page edge */
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05));
-        }
-
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #000;
-            font-size: 4rem;
-            padding: 40px;
-            cursor: pointer;
-            z-index: 100;
-            opacity: 0.1;
-            transition: opacity 0.3s, transform 0.2s;
-            outline: none;
-        }
-
-        .nav-btn:hover { 
-            opacity: 0.8;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .prev { left: 1%; }
-        .next { right: 1%; }
-
-        /* Counter for the 34 pages */
-        #counter {
-            position: absolute;
-            bottom: 20px;
-            right: 30px;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            color: #000;
-            opacity: 0.3;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: 768px) {
-            .nav-btn { font-size: 2.5rem; padding: 15px; opacity: 0.3; }
-            img { max-width: 100vw; max-height: 85vh; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="slider-container">
-        <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous">&#10094;</button>
         
         <div id="gallery"></div>
-        
-        <div id="counter">1 / 34</div>
 
-        <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next">&#10095;</button>
+        <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
     </div>
 
-    <canvas id="canvas" style="display:none;"></canvas>
-
     <script>
-        const totalImages = 34; 
+        const totalSlides = 33; // Adjusted for the deleted page 17
         const gallery = document.getElementById('gallery');
-        const counter = document.getElementById('counter');
         let currentSlide = 0;
 
-        // 1. Generate all 34 slides
-        for (let i = 1; i <= totalImages; i++) {
+        // Generate slides and handle the Page 17 skip
+        for (let i = 1; i <= totalSlides; i++) {
             const slide = document.createElement('div');
             slide.className = i === 1 ? 'slide active' : 'slide';
             
-            const img = document.createElement('img');
-            // Matching your exact naming convention
-            img.src = `Junde Xu's design portfolio ${i}.jpeg`;
-            img.alt = `Portfolio Page ${i}`;
-            
-            // This ensures the first page color loads immediately
-            if (i === 1) {
-                img.onload = () => updateBackground(img);
+            // Logic: if we are at or past the 17th slide, load image 18
+            let imageNum = i;
+            if (i >= 17) {
+                imageNum = i + 1;
             }
 
+            const img = document.createElement('img');
+            // Ensure this matches your file extension (.jpeg or .jpg)
+            img.src = `Junde Xu's design portfolio ${imageNum}.jpeg`;
+            
             slide.appendChild(img);
             gallery.appendChild(slide);
         }
@@ -235,46 +115,15 @@
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + direction + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
-            
-            // Update Counter
-            counter.innerText = `${currentSlide + 1} / ${totalImages}`;
-            
-            // Update Background Color
-            const activeImg = slides[currentSlide].querySelector('img');
-            if (activeImg.complete) {
-                updateBackground(activeImg);
-            } else {
-                activeImg.onload = () => updateBackground(activeImg);
-            }
         }
 
-        // 2. Adaptive Background Logic
-        function updateBackground(img) {
-            try {
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                ctx.drawImage(img, 0, 0);
-                
-                // Samples the top-left corner (pixel 10,10)
-                const pixel = ctx.getImageData(10, 10, 1, 1).data;
-                const rgb = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
-                
-                document.documentElement.style.setProperty('--bg-color', rgb);
-            } catch (e) {
-                // Fallback to white if there's a security/loading error
-                document.documentElement.style.setProperty('--bg-color', '#ffffff');
-            }
-        }
-
-        // Navigation Controls
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === "ArrowLeft") changeSlide(-1);
             if (e.key === "ArrowRight") changeSlide(1);
         });
 
+        // Swipe navigation for mobile
         let touchstartX = 0;
         document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
         document.addEventListener('touchend', e => {
@@ -282,7 +131,6 @@
             if (touchendX < touchstartX - 50) changeSlide(1);
             if (touchendX > touchstartX + 50) changeSlide(-1);
         }, {passive: true});
-
     </script>
 </body>
 </html>
