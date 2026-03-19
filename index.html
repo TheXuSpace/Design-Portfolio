@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Junde Xu | Portfolio</title>
     <style>
+        :root {
+            --bg-color: #ffffff; /* Default to white */
+        }
+
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #ffffff; /* Matches your cover's white background */
+            background-color: var(--bg-color);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.8s ease-in-out;
         }
 
         .slider-container {
@@ -39,14 +44,16 @@
         }
 
         img {
-            max-width: 100vw; /* Allows the image to breathe */
+            max-width: 100vw;
             max-height: 100vh;
             display: block;
-            object-fit: contain; /* CRITICAL: Prevents stretching/distortion */
+            object-fit: contain;
             user-select: none;
+            /* This creates the 20% zoom out effect */
+            transform: scale(0.8); 
+            transition: transform 0.5s ease;
         }
 
-        /* Navigation Arrows */
         .nav-btn {
             position: absolute;
             top: 50%;
@@ -58,20 +65,20 @@
             padding: 30px;
             cursor: pointer;
             z-index: 100;
-            opacity: 0.1; /* Very faint so it doesn't distract from your work */
-            transition: opacity 0.3s ease, transform 0.2s;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
         }
 
         .nav-btn:hover {
             opacity: 0.8;
-            transform: translateY(-50%) scale(1.1);
         }
 
-        .prev { left: 2%; }
-        .next { right: 2%; }
+        .prev { left: 1%; }
+        .next { right: 1%; }
 
         @media (max-width: 768px) {
             .nav-btn { font-size: 2rem; padding: 15px; opacity: 0.3; }
+            img { transform: scale(0.9); /* Less zoom out on mobile */ }
         }
     </style>
 </head>
@@ -79,32 +86,33 @@
 
     <div class="slider-container">
         <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-        
         <div id="gallery"></div>
-
         <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
     </div>
 
+    <canvas id="canvas" style="display:none;"></canvas>
+
     <script>
-        const totalSlides = 33; // Adjusted for the deleted page 17
+        const totalSlides = 33; 
         const gallery = document.getElementById('gallery');
         let currentSlide = 0;
 
-        // Generate slides and handle the Page 17 skip
         for (let i = 1; i <= totalSlides; i++) {
             const slide = document.createElement('div');
             slide.className = i === 1 ? 'slide active' : 'slide';
             
-            // Logic: if we are at or past the 17th slide, load image 18
             let imageNum = i;
-            if (i >= 17) {
-                imageNum = i + 1;
-            }
+            if (i >= 17) imageNum = i + 1;
 
             const img = document.createElement('img');
-            // Ensure this matches your file extension (.jpeg or .jpg)
             img.src = `Junde Xu's design portfolio ${imageNum}.jpeg`;
-            
+            img.crossOrigin = "Anonymous"; // Allows the script to read image colors
+
+            // Sample color as soon as image loads
+            img.onload = function() {
+                if (i === 1) updateBackground(this);
+            };
+
             slide.appendChild(img);
             gallery.appendChild(slide);
         }
@@ -115,15 +123,37 @@
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + direction + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
+            
+            const activeImg = slides[currentSlide].querySelector('img');
+            if (activeImg.complete) {
+                updateBackground(activeImg);
+            } else {
+                activeImg.onload = () => updateBackground(activeImg);
+            }
         }
 
-        // Keyboard navigation
+        function updateBackground(img) {
+            try {
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                ctx.drawImage(img, 0, 0);
+                
+                // Sample pixel at (10,10) to match image background
+                const pixel = ctx.getImageData(10, 10, 1, 1).data;
+                const rgb = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+                document.documentElement.style.setProperty('--bg-color', rgb);
+            } catch (e) {
+                document.documentElement.style.setProperty('--bg-color', '#ffffff');
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === "ArrowLeft") changeSlide(-1);
             if (e.key === "ArrowRight") changeSlide(1);
         });
 
-        // Swipe navigation for mobile
         let touchstartX = 0;
         document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
         document.addEventListener('touchend', e => {
