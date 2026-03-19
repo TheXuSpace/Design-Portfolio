@@ -11,7 +11,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #ffffff; /* Pure White */
+            background-color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -24,14 +24,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: none; /* Hides cursor initially for a gallery feel */
         }
 
-        .slider-container:hover {
-            cursor: auto;
-        }
-
-        /* The Slide */
         .slide {
             display: none;
             width: 100%;
@@ -53,7 +47,6 @@
             -webkit-user-drag: none;
         }
 
-        /* Navigation Arrows */
         .nav-btn {
             position: absolute;
             top: 50%;
@@ -61,61 +54,50 @@
             background: none;
             border: none;
             color: #000000;
-            font-size: 4.5rem;
-            padding: 50px;
+            font-size: 4rem;
+            padding: 40px;
             cursor: pointer;
             z-index: 10;
-            opacity: 0; /* Hidden by default */
-            transition: opacity 0.4s ease;
-            user-select: none;
-            outline: none;
-        }
-
-        /* Show arrows on container hover */
-        .slider-container:hover .nav-btn {
-            opacity: 0.15;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
         }
 
         .nav-btn:hover {
-            opacity: 0.8 !important;
+            opacity: 0.8;
         }
 
-        .prev { left: 1%; }
-        .next { right: 1%; }
+        .prev { left: 2%; }
+        .next { right: 2%; }
 
-        /* Mobile specific adjustments */
         @media (max-width: 768px) {
-            .nav-btn {
-                font-size: 2.5rem;
-                padding: 15px;
-                opacity: 0.3;
-            }
-            img {
-                max-width: 100vw;
-                max-height: 80vh;
-            }
+            .nav-btn { font-size: 2.5rem; padding: 15px; opacity: 0.3; }
+            img { max-width: 100vw; }
         }
     </style>
 </head>
 <body>
 
-    <div class="slider-container" id="container">
+    <div class="slider-container">
         <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
 
         <div class="slide active">
-            <img src="page1.jpeg">
+            <img src="Junde Xu's design portfolio 1.jpeg">
         </div>
 
         <div class="slide">
-            <img src="page2.jpeg">
+            <img src="Junde Xu's design portfolio 2.jpeg">
         </div>
 
         <div class="slide">
-            <img src="page3.jpeg">
+            <img src="Junde Xu's design portfolio 3.jpeg">
         </div>
 
         <div class="slide">
-            <img src="page4.jpeg">
+            <img src="Junde Xu's design portfolio 4.jpeg">
+        </div>
+
+        <div class="slide">
+            <img src="Junde Xu's design portfolio 5.jpeg">
         </div>
 
         <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
@@ -124,9 +106,6 @@
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
-        const container = document.getElementById('container');
-        const nextBtn = document.querySelector('.next');
-        const prevBtn = document.querySelector('.prev');
 
         function changeSlide(direction) {
             slides[currentSlide].classList.remove('active');
@@ -134,13 +113,11 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // Keyboard support (Left/Right arrows)
         document.addEventListener('keydown', (e) => {
             if (e.key === "ArrowLeft") changeSlide(-1);
             if (e.key === "ArrowRight") changeSlide(1);
         });
 
-        // Swipe support for your Phone
         let touchstartX = 0;
         let touchendX = 0;
         document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
@@ -148,20 +125,6 @@
             touchendX = e.changedTouches[0].screenX;
             if (touchendX < touchstartX - 50) changeSlide(1);
             if (touchendX > touchstartX + 50) changeSlide(-1);
-        });
-
-        // Auto-hide arrows when mouse stops moving
-        let timer;
-        document.addEventListener('mousemove', () => {
-            container.style.cursor = 'auto';
-            nextBtn.style.opacity = '0.15';
-            prevBtn.style.opacity = '0.15';
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                container.style.cursor = 'none';
-                nextBtn.style.opacity = '0';
-                prevBtn.style.opacity = '0';
-            }, 2000); // Hides after 2 seconds of no movement
         });
     </script>
 </body>
